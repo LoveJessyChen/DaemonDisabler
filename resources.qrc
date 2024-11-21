@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="about.svg">icon/about.svg</file>
+        <file alias="brand-bilibili.svg">icon/brand-bilibili.svg</file>
+        <file alias="brand-github.svg">icon/brand-github.svg</file>
+        <file alias="icon.svg">icon/icon.svg</file>
+        <file alias="language.svg">icon/language.svg</file>
+    </qresource>
+</RCC>
