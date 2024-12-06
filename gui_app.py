@@ -41,7 +41,9 @@ class App(QtWidgets.QWidget):
                 "ios_version": "iOS",
                 "supported": "Supported",
                 "not_supported": "Not Supported",
-                "supported_versions_tip": "Current version is not supported.\nWorks on:\niOS 15.7+",
+                "partially_supported": "Partially Supported",
+                "supported_versions_tip": "Current iOS is not supported.\nWorks on:\niOS 15.7-iOS 18.2 beta 3\niOS 18.2 beta 3+ (Partially supported)",
+                "partially_supported_tip": "Current iOS cannot skip setup screen.\nAfter reboot, when showing \"iPhone Partially Set Up\" screen,\nBe sure click the blue text \"Continue with Partial Setup\" (NOT the blue button).\nOtherwise your data will be ERASED.",
                 "apply_changes": "Applying changes to disabled.plist...",
                 "applying_changes": "Applying changes...",
                 "success": "Changes applied successfully!\nRemember to turn Find My back on!",
@@ -82,7 +84,9 @@ class App(QtWidgets.QWidget):
                 "ios_version": "iOS",
                 "supported": "支持的版本",
                 "not_supported": "不支持的版本",
-                "supported_versions_tip": "当前版本不在支持范围内\n支持的版本:\niOS 15.7+",
+                "partially_supported": "部分支持",
+                "partially_supported_tip": "当前 iOS 版本无法跳过设置页面\n在重启后提示\"iPhone 已进行部分设置\"时\n务必点击\"保留部分设置并继续\"\n否则将会造成无可挽回的数据丢失",
+                "supported_versions_tip": "当前版本不在支持范围内\n支持的版本:\niOS 15.7-iOS 18.2 beta 3 (完整支持)\niOS 18.2 beta 3+ (部分支持)",
                 "apply_changes": "正在应用更改到 disabled.plist...",
                 "applying_changes": "正在应用更改...",
                 "success": "更改已成功应用！\n记得重新启用查找!",
@@ -293,8 +297,9 @@ class App(QtWidgets.QWidget):
                         locale=ld.locale,
                         ld=ld
                     )
+                    self.supported, self.partial = self.device.supported()
                     self.update_device_info()
-                    if self.device.supported():
+                    if self.supported:
                         self.disable_controls(False)
                     else:
                         self.disable_controls(True)
@@ -324,9 +329,13 @@ class App(QtWidgets.QWidget):
 
     def update_device_info(self):
         if self.device:
-            if self.device.supported():
-                self.device_info.setText(f"{self.language_pack[self.language]['connected']} {self.device.name}\n{self.language_pack[self.language]['ios_version']} {self.device.version} Build {self.device.build} ({self.language_pack[self.language]['supported']})")
-                self.device_info.setToolTip("")
+            if self.supported:
+                if self.partial:
+                    self.device_info.setText(f"{self.language_pack[self.language]['connected']} {self.device.name}\n{self.language_pack[self.language]['ios_version']} {self.device.version} Build {self.device.build} ({self.language_pack[self.language]['partially_supported']})")
+                    self.device_info.setToolTip(self.language_pack[self.language]["partially_supported_tip"])
+                else:
+                    self.device_info.setText(f"{self.language_pack[self.language]['connected']} {self.device.name}\n{self.language_pack[self.language]['ios_version']} {self.device.version} Build {self.device.build} ({self.language_pack[self.language]['supported']})")
+                    self.device_info.setToolTip("")
             else:
                 self.device_info.setText(f"{self.language_pack[self.language]['connected']} {self.device.name}\n{self.language_pack[self.language]['ios_version']} {self.device.version} Build {self.device.build} ({self.language_pack[self.language]['not_supported']})")
                 self.device_info.setToolTip(self.language_pack[self.language]["supported_versions_tip"])
@@ -384,8 +393,12 @@ class App(QtWidgets.QWidget):
     def apply_changes(self):
         self.apply_button.setText(self.language_pack[self.language]["applying_changes"])
         self.apply_button.setEnabled(False)
+        if self.partial:
+            if self.msgbox.warning(self, "Important", self.language_pack[self.language]["partially_supported_tip"], self.msgbox.Apply | self.msgbox.Cancel, self.msgbox.Cancel) == self.msgbox.Cancel:
+                self.apply_button.setText(self.language_pack[self.language]["apply_changes"])
+                self.apply_button.setEnabled(True)
+                return
         QtWidgets.QApplication.processEvents()
-
         QtCore.QTimer.singleShot(100, self._execute_changes)
 
     def _execute_changes(self):
@@ -473,12 +486,11 @@ class CheckService():
 
         if 'could not be found' in result.stderr or 'does not exist' in result.stderr:
             self.show_error(f"Check if '{service_name}' is installed.")
-        elif 'inactive' in result.stdout or 'stopped' in result.stderr:
-            self.start_service(service_name)
+        self.start_service(service_name)
 
     def start_service(self, service_name):
         init_system = self.get_init_system()
-        command = self.get_command(init_system, service_name, 'start')
+        command = self.get_command(init_system, service_name, 'restart')
 
         if command is None:
             return

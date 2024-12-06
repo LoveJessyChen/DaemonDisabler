@@ -102,7 +102,7 @@ cd DaemonDisabler
 ### Create venv
 
 ```
-python3 -m venv .venv
+python -m venv .venv
 ```
 
 This will create a virtual environment in  `.venv` directory under the current directory.
@@ -134,19 +134,19 @@ The virtual environment will deactivate when you close the current terminal or e
 ### Install Dependencies
 
 ```
-pip3 install -r requirements.txt --ignore-requires-python
+pip install -r requirements.txt
 ```
 
 ### Run the Program (Command Line)
 
 ```
-python3 cli_app.py
+python cli_app.py
 ```
 
 ### Run the Program (GUI)
 
 ```
-python3 gui_app.py
+python gui_app.py
 ```
 
 If it can't start or isn't responding on Linux, make sure  `usbmuxd` service is running.
@@ -156,7 +156,7 @@ If it can't start or isn't responding on Linux, make sure  `usbmuxd` service is 
 If you want to run the program on a system without Python installed, you can build an executable with following command:
 
 ```
-python3 compile.py
+python compile.py
 ```
 
 Executables will be located in `./dist` .
@@ -169,7 +169,6 @@ pyrcc5 resources.qrc -o resources_rc.py
 
 ## Credits
 
-- [ringoju1ce](https://github.com/ringoju1ce)/[DaemonDisabler](https://github.com/ringoju1ce/DaemonDisabler)
 - Modified from [rponeawa](https://github.com/rponeawa)/[thermalmonitordDisabler](https://github.com/rponeawa/thermalmonitordDisabler), [leminlimez](https://github.com/leminlimez)/[Nugget](https://github.com/leminlimez/Nugget)
 - [JJTech](https://github.com/JJTech0130) for Sparserestore/[TrollRestore](https://github.com/JJTech0130/TrollRestore)
 - [pymobiledevice3](https://github.com/doronz88/pymobiledevice3)

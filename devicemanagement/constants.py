@@ -13,11 +13,13 @@ class Device:
 
     def supported(self) -> bool:
         parsed_ver: Version = Version(self.version)
-        if (parsed_ver < Version("14.0")):
-            return False
-        if (parsed_ver > Version("17.7.1")) and (parsed_ver < Version("18.0")):
-            return True
-        return True
+        if (parsed_ver >= Version("15.7")) and (parsed_ver < Version("18.2")):
+            return True, False
+        if (parsed_ver == Version("18.2") and self.build in ["22C5109p", "22C5125e", "22C5131e"]):
+            return True, False
+        if (parsed_ver == Version("18.2")) or (parsed_ver > Version("18.2")):
+            return True, True
+        return False, False
 
 class Version:
     def __init__(self, ver: str):

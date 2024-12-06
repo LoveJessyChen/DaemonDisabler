@@ -100,7 +100,7 @@ cd DaemonDisabler
 ### 创建虚拟环境
 
 ```
-python3 -m venv .venv
+python -m venv .venv
 ```
 
 这将会在当前目录下的 `.venv` 目录中创建虚拟环境。
@@ -132,19 +132,19 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 ### 安装依赖
 
 ```
-pip3 install -r requirements.txt --ignore-requires-python
+pip install -r requirements.txt
 ```
 
 ### 运行程序 (命令行)
 
 ```
-python3 cli_app.py
+python cli_app.py
 ```
 
 ### 运行程序 (GUI)
 
 ```
-python3 gui_app.py
+python gui_app.py
 ```
 
 如果 Linux 运行报错或无响应，首先检查 usbmuxd 服务是否运行。
@@ -154,7 +154,7 @@ python3 gui_app.py
 如果您希望在没有安装 Python 环境的系统中运行程序，可以执行下面的命令构建可执行档。
 
 ```
-python3 compile.py
+python compile.py
 ```
 
 构建的可执行档位于 `./dist`
@@ -167,7 +167,6 @@ pyrcc5 resources.qrc -o resources_rc.py
 
 ## 致谢
 
-- 感谢[ringoju1ce](https://github.com/ringoju1ce)/[DaemonDisabler](https://github.com/ringoju1ce/DaemonDisabler)
 - 修改自 [rponeawa](https://github.com/rponeawa)/[thermalmonitordDisabler](https://github.com/rponeawa/thermalmonitordDisabler), [leminlimez](https://github.com/leminlimez)/[Nugget](https://github.com/leminlimez/Nugget)
 - 感谢 [JJTech](https://github.com/JJTech0130) 提供的 Sparserestore/[TrollRestore](https://github.com/JJTech0130/TrollRestore)
 - 感谢 [pymobiledevice3](https://github.com/doronz88/pymobiledevice3)
